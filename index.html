@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>香港 The Weeknd 演唱会出行助手</title>
+<style>
+:root {
+  --bg: #0f1115;
+  --bg2: #171a21;
+  --card: #1c212b;
+  --border: #2a3140;
+  --text: #f2f4f8;
+  --muted: #9aa3b2;
+  --dim: #6b7385;
+  --accent: #6ea8ff;
+  --ok: #3ecf8e;
+  --warn: #f0b429;
+  --info: #3b82f6;
+  --tap: 48px;
+  --radius: 14px;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  font-size: 16px;
+  padding-bottom: calc(24px + var(--safe-b));
+}
+a { color: var(--accent); word-break: break-all; }
+.wrap { max-width: 640px; margin: 0 auto; padding: 16px 16px 32px; }
+header.app {
+  padding: 20px 0 8px;
+}
+header.app h1 {
+  font-size: 1.45rem;
+  margin: 0 0 8px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+.summary {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin: 0 0 16px;
+}
+.toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 20px;
+}
+.toc a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg2);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.88rem;
+}
+.callout {
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin: 0 0 20px;
+  border: 1px solid rgba(59,130,246,0.35);
+  background: rgba(59,130,246,0.12);
+}
+.callout .lead {
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #93c5fd;
+}
+section.block {
+  margin: 0 0 28px;
+  padding-top: 4px;
+}
+section.block > h2 {
+  font-size: 1.2rem;
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+section.block > h3 {
+  font-size: 1.02rem;
+  margin: 18px 0 10px;
+  color: #d7dce6;
+}
+.caption {
+  color: var(--dim);
+  font-size: 0.82rem;
+  margin: -6px 0 12px;
+}
+.props {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--card);
+  margin-bottom: 12px;
+}
+.prop {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+}
+.prop:last-child { border-bottom: 0; }
+.prop .k { color: var(--muted); font-size: 0.88rem; }
+.prop .v { font-size: 0.95rem; }
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.badge.warn { background: rgba(240,180,41,0.18); color: var(--warn); }
+.badge.ok { background: rgba(62,207,142,0.18); color: var(--ok); }
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+.link-card {
+  display: block;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg2);
+  text-decoration: none;
+  color: var(--text);
+  min-height: var(--tap);
+}
+.link-card .t { font-weight: 600; margin-bottom: 2px; }
+.link-card .s { color: var(--dim); font-size: 0.8rem; }
+.steps { counter-reset: step; margin: 0; padding: 0; list-style: none; }
+.steps li {
+  position: relative;
+  padding: 12px 12px 12px 48px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  margin-bottom: 8px;
+}
+.steps li::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute;
+  left: 12px; top: 12px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #0b1220;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.steps .st { font-weight: 650; margin-bottom: 4px; }
+.steps .sd { color: var(--muted); font-size: 0.92rem; }
+.row-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  background: var(--card);
+  margin-bottom: 8px;
+}
+.row-card .lead {
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: none;
+  margin-bottom: 2px;
+}
+.row-card .rt { font-weight: 650; margin-bottom: 4px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.row-card .rd { color: var(--muted); font-size: 0.92rem; }
+p { margin: 0 0 10px; }
+.muted { color: var(--muted); }
+.fx-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+  align-items: flex-end;
+}
+.field { flex: 1 1 140px; min-width: 120px; }
+.field label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+input[type="number"], input[type="text"], select, textarea {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1rem;
+  -webkit-appearance: none;
+  appearance: none;
+}
+textarea { min-height: 88px; resize: vertical; }
+button, .btn {
+  min-height: var(--tap);
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+button.primary {
+  background: var(--accent);
+  color: #0b1220;
+  border-color: transparent;
+}
+.driver-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  background: #fff;
+  color: #111;
+  margin: 10px 0 12px;
+}
+.driver-card .zh-big { font-size: 1.75rem; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+.driver-card .zh-addr { font-size: 1.35rem; line-height: 1.4; margin-bottom: 12px; }
+.driver-card .en { font-size: 1.05rem; color: #444; line-height: 1.45; margin-bottom: 4px; }
+.driver-card .en2 { font-size: 0.95rem; color: #555; line-height: 1.45; }
+.driver-card hr {
+  border: 0; border-top: 1px solid #ddd; margin: 16px 0;
+}
+.driver-card .hint { font-size: 0.85rem; color: #666; margin-bottom: 8px; }
+.driver-card input, .driver-card textarea {
+  background: #f5f5f5;
+  color: #111;
+  border-color: #ccc;
+}
+.driver-card .hotel-out {
+  margin-top: 12px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 8px 0 12px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  min-width: 480px;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 10px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: var(--bg2); color: var(--muted); font-weight: 600; }
+.check-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.check-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  min-height: var(--tap);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.check-item input {
+  width: 22px; height: 22px; margin-top: 2px; flex: 0 0 auto;
+  accent-color: var(--accent);
+}
+.check-item span { flex: 1; }
+.rate-note { font-size: 0.82rem; color: var(--dim); margin-top: 8px; }
+.footer-note { color: var(--dim); font-size: 0.85rem; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="app">
+    <h1>香港 The Weeknd 演唱会出行助手</h1>
+    <p class="summary">启德主场馆 After Hours Til Dawn：演出信息、交通、汇率换算、司机地址卡、粤语短句与出行清单。事实均来自官方/可靠来源链接；未查到的标为未确认。</p>
+  </header>
+
+  <nav class="toc" aria-label="目录">
+    <a href="#info">演唱会信息</a>
+    <a href="#transit">交通</a>
+    <a href="#fx">汇率换算</a>
+    <a href="#driver">给司机看的地址卡</a>
+    <a href="#cantonese">实用粤语</a>
+    <a href="#checklist">入场 / 出行清单</a>
+  </nav>
+
+  <div class="callout">
+    <div class="lead">明天场次提醒</div>
+    <div>官方场次为 2026-10-24、25、30、31；演出 20:15。10-30 / 10-31 原公告为售罄档，出发前请再核对自己门票日期与闸口。10-30 园区另有其他活动，离场交通预计更挤。</div>
+  </div>
+
+  <section class="block" id="info">
+    <h2>演唱会信息</h2>
+    <div class="props">
+      <div class="prop"><div class="k">演出</div><div class="v">The Weeknd: After Hours Til Dawn Tour</div></div>
+      <div class="prop"><div class="k">日期</div><div class="v">2026-10-24、25（加场）及 10-30、31（五/六）</div></div>
+      <div class="prop"><div class="k">场地</div><div class="v">启德主场馆 Kai Tak Stadium（启德体育园）</div></div>
+      <div class="prop"><div class="k">地址</div><div class="v">九龙启德承启道 38–39 号 / 38–39 Shing Kai Road, Kai Tak, Kowloon</div></div>
+      <div class="prop"><div class="k">开场</div><div class="v">20:15（暖场 Prince 85：19:25）</div></div>
+      <div class="prop"><div class="k">安检 / 入场</div><div class="v">安检约 16:00 起；大众入场约 18:00（VIP 另有时段）</div></div>
+      <div class="prop"><div class="k">购票</div><div class="v">HK Ticketing / Live Nation / Trip.com</div></div>
+      <div class="prop"><div class="k">票价参考</div><div class="v">一般约 HK$808 起；VIP 约 HK$3408 起（以购票页为准）</div></div>
+      <div class="prop"><div class="k">入场票种</div><div class="v"><span class="badge warn">须持有效实体门票正本</span></div></div>
+    </div>
+    <p>背包上限约 38×30×20cm；禁专业相机 / 运动相机 / 平板 / 自拍杆 / 三脚架等。≤600ml 空塑胶或硅胶水樽可带（无盖、无液体）。充电宝未在官方禁带清单中单独点名——未确认是否另有限制，请以 Live Nation 入場须知当日版本为准。</p>
+    <div class="links">
+      <a class="link-card" href="https://partnernet.hktb.com/en/destination/events_festivals/index.html?eventID=86609" target="_blank" rel="noopener">
+        <div class="t">香港旅发局活动页（日期/场地/时间）</div><div class="s">partnernet.hktb.com</div>
+      </a>
+      <a class="link-card" href="https://www.livenation.hk/en/theweeknd-hk-2026-admission-notice" target="_blank" rel="noopener">
+        <div class="t">Live Nation 入場须知（安检与禁带）</div><div class="s">livenation.hk</div>
+      </a>
+      <a class="link-card" href="https://www.livenation.hk/en/event/the-weeknd-after-hours-til-dawn-tour-hong-kong-tickets-edp1678707" target="_blank" rel="noopener">
+        <div class="t">Live Nation 购票页</div><div class="s">livenation.hk</div>
+      </a>
+      <a class="link-card" href="https://www.kaitaksportspark.com.hk/events-tickets/the-weeknd-after-hours-til-dawn-tour" target="_blank" rel="noopener">
+        <div class="t">启德体育园官方活动页</div><div class="s">kaitaksportspark.com.hk</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="block" id="transit">
+    <h2>交通</h2>
+    <h3>机场 → 市区 / 场馆</h3>
+    <ol class="steps">
+      <li>
+        <div class="st">机场快线 Airport Express</div>
+        <div class="sd">香港国际机场 → 青衣 →（东涌线转）南昌 →（屯马线）宋皇台 / 启德。旅发局估算约 1 小时 5 分。可用八达通。</div>
+      </li>
+      <li>
+        <div class="st">巴士（省钱）</div>
+        <div class="sd">城巴等机场路线可到九龙城一带，再步行或转短程；班次与票价请查城巴 / KMB 或 Trip.com 机场指引。</div>
+      </li>
+      <li>
+        <div class="st">的士</div>
+        <div class="sd">市区的士（红的）直达；说明「啟德主場館 / Kai Tak Stadium」。车费较高，适合行李多或赶时间。</div>
+      </li>
+    </ol>
+    <p class="muted">路线示意见旅发局启德体育园页：<a href="https://www.discoverhongkong.com/eng/place-to-go/travel.guide-kai-tak-sports-park.html" target="_blank" rel="noopener">https://www.discoverhongkong.com/eng/place-to-go/travel.guide-kai-tak-sports-park.html</a></p>
+
+    <h3>市区 → 场馆</h3>
+    <div class="row-card">
+      <div class="lead">首选</div>
+      <div class="rt">港铁宋皇台站（屯马线）D 出口 <span class="badge ok">推荐</span></div>
+      <div class="rd">西桥方向，通常更快到主场馆；步行约 5–10 分钟</div>
+    </div>
+    <div class="row-card">
+      <div class="lead">备选</div>
+      <div class="rt">港铁启德站（屯马线）D 出口</div>
+      <div class="rd">经中央广场；持 Y 闸票者按现场指示经车站广场 / 沐泰街</div>
+    </div>
+    <div class="row-card">
+      <div class="lead">的士</div>
+      <div class="rt">指定落客区</div>
+      <div class="rd">活动日以园方最新交通安排为准；一般有主场馆 / 体艺馆落客点。承启道本身常为禁停区，勿让司机路边乱停。</div>
+    </div>
+
+    <h3>散场离开</h3>
+    <p>优先港铁，跟现场人流与指示牌；可用警察「Easy Leave」平台看出口与拥挤度（园方/赛会指引有提及）。</p>
+    <p>往罗湖方向（经大围转东铁）末班车，过往活动通告曾写宋皇台约 22:59、启德约 23:01——以当天港铁为准：<a href="https://www.mtr.com.hk/" target="_blank" rel="noopener">https://www.mtr.com.hk/</a></p>
+    <p>的士上客点活动日可能集中在宋皇台道等指定区；主场馆落客区未必开放上客。可预留时间取行李寄存（过往通告约 15:30–23:15，三处付费寄存）。</p>
+  </section>
+
+  <section class="block" id="fx">
+    <h2>汇率换算</h2>
+    <p class="caption" id="rateNote">汇率取自 open.er-api.com，基准 HKD；数据更新时间 2026-10-29 08:02（Asia/Shanghai）</p>
+    <div class="fx-bar">
+      <div class="field">
+        <label for="amount">金额</label>
+        <input id="amount" type="number" inputmode="decimal" value="100" placeholder="输入金额" min="0" step="any">
+      </div>
+      <div class="field">
+        <label for="fromCur">币种</label>
+        <select id="fromCur">
+          <option value="HKD" selected>港币 HKD</option>
+          <option value="MYR">马币 MYR</option>
+          <option value="CNY">人民币 CNY</option>
+        </select>
+      </div>
+      <button type="button" id="fxReset">重置为 100</button>
+    </div>
+    <div class="props" id="fxOut">
+      <div class="prop"><div class="k">港币 HKD</div><div class="v" id="outHKD">—</div></div>
+      <div class="prop"><div class="k">马币 MYR</div><div class="v" id="outMYR">—</div></div>
+      <div class="prop"><div class="k">人民币 CNY</div><div class="v" id="outCNY">—</div></div>
+    </div>
+    <p id="fxHint" class="muted">参考中间价（非兑换店卖价）：1 HKD ≈ 0.519749 MYR ≈ 0.85159 CNY。实际换钱以柜台/ATM 为准。</p>
+    <p class="rate-note" id="liveNote"></p>
+  </section>
+
+  <section class="block" id="driver">
+    <h2>给司机看的地址卡</h2>
+    <p>把手机亮度调高，递给司机即可。下方酒店地址可自行填写（仅本机显示，不会上传）。</p>
+    <div class="driver-card">
+      <div class="zh-big">啟德主場館</div>
+      <div class="zh-addr">九龍啟德承啟道 38–39 號</div>
+      <div class="en">Kai Tak Stadium</div>
+      <div class="en2">38–39 Shing Kai Road, Kai Tak, Kowloon, Hong Kong</div>
+      <hr>
+      <div class="hint">酒店 / 落客（請填寫）Hotel / drop-off</div>
+      <label for="hotel" style="display:block;font-size:0.85rem;color:#555;margin-bottom:6px;">酒店地址（可编辑）</label>
+      <textarea id="hotel" placeholder="例如：尖沙咀某某酒店，某某道 XX 号" rows="3"></textarea>
+      <div class="hotel-out" id="hotelOut" hidden></div>
+    </div>
+  </section>
+
+  <section class="block" id="cantonese">
+    <h2>实用粤语</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>普通话 / 书面</th><th>粤拼 Jyutping</th><th>意思</th></tr>
+        </thead>
+        <tbody id="phraseBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block" id="checklist">
+    <h2>入场 / 出行清单</h2>
+    <p class="caption" id="checkCaption">本地勾选保存在本机（0/12）</p>
+    <div class="check-list" id="checkList"></div>
+    <button type="button" id="clearChecks">全部取消勾选</button>
+
+    <h3>实用贴士</h3>
+    <div class="row-card">
+      <div class="rt">八达通</div>
+      <div class="rd">地铁、巴士、部分便利店通用；机场也可买/加值。游客版八达通可在机场或客服购买。</div>
+    </div>
+    <div class="row-card">
+      <div class="rt">AlipayHK / WeChat Pay HK</div>
+      <div class="rd">许多商户收；内地支付宝/微信到港后常需开通香港版或绑定支持卡，出发前在 App 内确认，勿假设一定能刷。</div>
+    </div>
+    <div class="row-card">
+      <div class="rt">插头</div>
+      <div class="rd">香港为英式 Type G 三脚方插，电压 220V。马来西亚多为 Type G，多数插头可直接用；仍建议带一条万能转换以防万一。</div>
+    </div>
+    <div class="row-card">
+      <div class="rt">天气</div>
+      <div class="rd">开演前查香港天文台：<a href="https://www.hko.gov.hk/" target="_blank" rel="noopener">https://www.hko.gov.hk/</a> 长伞可能不准带入场，带短折伞或轻便雨衣。</div>
+    </div>
+    <div class="row-card">
+      <div class="rt">门票</div>
+      <div class="rd">入場须知写明须实体门票正本；尽量演出日前在 HK Ticketing 自助机取票：<a href="https://hkt.hkticketing.com/" target="_blank" rel="noopener">https://hkt.hkticketing.com/</a></div>
+    </div>
+  </section>
+
+  <section class="block" id="sources">
+    <h2>资料来源</h2>
+    <div class="links">
+      <a class="link-card" href="https://partnernet.hktb.com/en/destination/events_festivals/index.html?eventID=86609" target="_blank" rel="noopener">
+        <div class="t">1. HKTB PartnerNet 活动资料</div><div class="s">partnernet.hktb.com</div>
+      </a>
+      <a class="link-card" href="https://www.livenation.hk/en/theweeknd-hk-2026-admission-notice" target="_blank" rel="noopener">
+        <div class="t">2. Live Nation 入場须知</div><div class="s">livenation.hk</div>
+      </a>
+      <a class="link-card" href="https://www.discoverhongkong.com/eng/place-to-go/travel.guide-kai-tak-sports-park.html" target="_blank" rel="noopener">
+        <div class="t">3. 旅发局：启德体育园交通</div><div class="s">discoverhongkong.com</div>
+      </a>
+      <a class="link-card" href="https://open.er-api.com/v6/latest/HKD" target="_blank" rel="noopener">
+        <div class="t">4. 汇率 API（本次抓取）</div><div class="s">open.er-api.com · 2026-10-29</div>
+      </a>
+      <a class="link-card" href="https://www.hko.gov.hk/" target="_blank" rel="noopener">
+        <div class="t">5. 香港天文台</div><div class="s">hko.gov.hk</div>
+      </a>
+    </div>
+    <p class="footer-note">禁带物品、末班车、落客点可能因场次调整；以门票印刷闸口与场馆当日通告为准。充电宝等未点名物品标为未确认。</p>
+  </section>
+</div>
+
+<script>
+(function () {
+  var EMBEDDED = { HKD: 1, MYR: 0.519749, CNY: 0.85159 };
+  var RATE_NOTE_EMBEDDED = "汇率取自 open.er-api.com，基准 HKD；数据更新时间 2026-10-29 08:02（Asia/Shanghai）";
+  var rates = { HKD: EMBEDDED.HKD, MYR: EMBEDDED.MYR, CNY: EMBEDDED.CNY };
+  var rateNote = RATE_NOTE_EMBEDDED;
+
+  var CHECK_ITEMS = [
+    { id: "passport", label: "护照 / 回乡证 / 入境证件" },
+    { id: "ticket", label: "实体门票正本（官方要求；提前在 HK Ticketing 取票）" },
+    { id: "id", label: "购票时用的身份证件（如需核对）" },
+    { id: "octopus", label: "八达通 / 可在港支付的卡或手机支付" },
+    { id: "cash", label: "少量港币现金备用" },
+    { id: "power", label: "充电宝（体积放入 ≤38×30×20cm 包内；清单未点名禁带，入场前再核对官方须知）" },
+    { id: "phone", label: "手机 + 充电器（港插 Type G 英式三脚）" },
+    { id: "bag", label: "小包（不超过 38×30×20cm）" },
+    { id: "bottle", label: "空塑胶/硅胶水樽 ≤600ml（无盖、无液体）" },
+    { id: "hotel", label: "酒店地址卡 / 本页司机卡截图" },
+    { id: "weather", label: "已查香港天文台天气" },
+    { id: "gate", label: "已确认门票上的入场闸口" }
+  ];
+
+  var PHRASES = [
+    ["师傅，去启德主场馆。", "si1 fu6, heoi3 kai2 dak1 zyu2 coeng4 gun2", "师傅，去启德主场馆"],
+    ["请在这里停。", "cing2 zoi6 ze2 leoi5 ting4", "请在这里停车"],
+    ["去港铁站怎么走？", "heoi3 gong2 tit3 zaam6 zam2 joeng6 zau2", "去地铁站怎么走"],
+    ["洗手间在哪里？", "sai2 sau2 gaan1 zoi6 naa5 leoi5", "洗手间在哪里"],
+    ["多少钱？", "do1 siu2 cin2", "多少钱"],
+    ["太贵了。", "taai3 gwai3 liu5", "太贵了"],
+    ["可以便宜一点吗？", "ho2 ji5 pin4 ji4 jat1 dim2 maa3", "能便宜一点吗"],
+    ["我要这个。", "ngo5 jiu3 ze5 go3", "我要这个"],
+    ["买单。", "maai5 daan1", "买单 / 结账"],
+    ["有没有八达通？", "jau5 mou5 baat3 daat6 tung1", "收不收八达通"],
+    ["谢谢。", "do1 ze6", "谢谢"],
+    ["不好意思。", "m4 hou2 ji3 si1", "不好意思 / 打扰了"],
+    ["我听不太懂。", "ngo5 ting1 bat1 taai3 dung2", "我听不太懂"],
+    ["请帮我叫出租车。", "cing2 bong1 ngo5 giu3 ceot1 zou1 ce1", "请帮我叫出租车"],
+    ["慢慢行，多谢。", "maan6 maan2 haang4, do1 ze6", "慢走，谢谢（离场）"]
+  ];
+
+  var LS_HOTEL = "hk-weeknd-hotel";
+  var LS_CHECKS = "hk-weeknd-checks";
+
+  function fmt(n) {
+    if (!isFinite(n)) return "—";
+    return n.toLocaleString("zh-CN", { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+  }
+
+  function toHkd(amount, from) {
+    return amount / rates[from];
+  }
+  function fromHkd(hkd, to) {
+    return hkd * rates[to];
+  }
+
+  function updateFx() {
+    var amountStr = document.getElementById("amount").value.replace(/,/g, "");
+    var amount = parseFloat(amountStr);
+    var from = document.getElementById("fromCur").value;
+    var hint = document.getElementById("fxHint");
+    if (!isFinite(amount) || amount < 0) {
+      document.getElementById("outHKD").textContent = "—";
+      document.getElementById("outMYR").textContent = "—";
+      document.getElementById("outCNY").textContent = "—";
+      hint.textContent = "请输入有效金额。";
+      return;
+    }
+    var hkd = toHkd(amount, from);
+    document.getElementById("outHKD").textContent = fmt(fromHkd(hkd, "HKD"));
+    document.getElementById("outMYR").textContent = fmt(fromHkd(hkd, "MYR"));
+    document.getElementById("outCNY").textContent = fmt(fromHkd(hkd, "CNY"));
+    hint.textContent = "参考中间价（非兑换店卖价）：1 HKD ≈ " + rates.MYR + " MYR ≈ " + rates.CNY + " CNY。实际换钱以柜台/ATM 为准。";
+    document.getElementById("rateNote").textContent = rateNote;
+  }
+
+  document.getElementById("amount").addEventListener("input", updateFx);
+  document.getElementById("fromCur").addEventListener("change", updateFx);
+  document.getElementById("fxReset").addEventListener("click", function () {
+    document.getElementById("amount").value = "100";
+    document.getElementById("fromCur").value = "HKD";
+    updateFx();
+  });
+
+  // Live rate fetch with graceful fallback
+  fetch("https://open.er-api.com/v6/latest/HKD")
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+    .then(function (data) {
+      if (!data || data.result !== "success" || !data.rates) throw new Error("bad");
+      var myr = data.rates.MYR;
+      var cny = data.rates.CNY;
+      if (typeof myr !== "number" || typeof cny !== "number") throw new Error("missing");
+      rates.MYR = myr;
+      rates.CNY = cny;
+      var when = data.time_last_update_utc || "";
+      rateNote = "汇率取自 open.er-api.com，基准 HKD；实时更新" + (when ? "（UTC " + when + "）" : "");
+      document.getElementById("liveNote").textContent = "已尝试拉取实时汇率并更新上方数字。";
+      updateFx();
+    })
+    .catch(function () {
+      document.getElementById("liveNote").textContent = "实时汇率不可用，已使用页面内嵌汇率（2026-10-29）。";
+    });
+
+  // Hotel persistence
+  var hotelEl = document.getElementById("hotel");
+  var hotelOut = document.getElementById("hotelOut");
+  try {
+    var savedHotel = localStorage.getItem(LS_HOTEL);
+    if (savedHotel) hotelEl.value = savedHotel;
+  } catch (e) {}
+  function syncHotel() {
+    var v = hotelEl.value;
+    try { localStorage.setItem(LS_HOTEL, v); } catch (e) {}
+    if (v.trim()) {
+      hotelOut.hidden = false;
+      hotelOut.textContent = v;
+    } else {
+      hotelOut.hidden = true;
+      hotelOut.textContent = "";
+    }
+  }
+  hotelEl.addEventListener("input", syncHotel);
+  syncHotel();
+
+  // Phrases
+  var tbody = document.getElementById("phraseBody");
+  PHRASES.forEach(function (row) {
+    var tr = document.createElement("tr");
+    row.forEach(function (cell) {
+      var td = document.createElement("td");
+      td.textContent = cell;
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  // Checklist
+  var checks = {};
+  try {
+    var raw = localStorage.getItem(LS_CHECKS);
+    if (raw) checks = JSON.parse(raw) || {};
+  } catch (e) { checks = {}; }
+  CHECK_ITEMS.forEach(function (c) {
+    if (typeof checks[c.id] !== "boolean") checks[c.id] = false;
+  });
+
+  var list = document.getElementById("checkList");
+  var caption = document.getElementById("checkCaption");
+
+  function saveChecks() {
+    try { localStorage.setItem(LS_CHECKS, JSON.stringify(checks)); } catch (e) {}
+  }
+  function updateCaption() {
+    var done = CHECK_ITEMS.filter(function (c) { return checks[c.id]; }).length;
+    caption.textContent = "本地勾选保存在本机（" + done + "/" + CHECK_ITEMS.length + "）";
+  }
+  function renderChecks() {
+    list.innerHTML = "";
+    CHECK_ITEMS.forEach(function (item) {
+      var label = document.createElement("label");
+      label.className = "check-item";
+      var input = document.createElement("input");
+      input.type = "checkbox";
+      input.checked = !!checks[item.id];
+      input.addEventListener("change", function () {
+        checks[item.id] = input.checked;
+        saveChecks();
+        updateCaption();
+      });
+      var span = document.createElement("span");
+      span.textContent = item.label;
+      label.appendChild(input);
+      label.appendChild(span);
+      list.appendChild(label);
+    });
+    updateCaption();
+  }
+  renderChecks();
+  document.getElementById("clearChecks").addEventListener("click", function () {
+    CHECK_ITEMS.forEach(function (c) { checks[c.id] = false; });
+    saveChecks();
+    renderChecks();
+  });
+
+  updateFx();
+})();
+</script>
+</body>
+</html>
